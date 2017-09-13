@@ -9,6 +9,7 @@ public class BangBangController implements UltrasonicController {
   private final int motorLow;
   private final int motorHigh;
   private int distance;
+  private int distError;
 
   public BangBangController(int bandCenter, int bandwidth, int motorLow, int motorHigh) {
     // Default Constructor
@@ -25,17 +26,18 @@ public class BangBangController implements UltrasonicController {
   @Override
   public void processUSData(int distance) {
     this.distance = distance;
-    if (distance < (bandCenter - badwidth)) {
-    	WallFollowingLab.leftMotor.setSpeed(motorLow);
+    this.distError = bandCenter - distance;
+    if (distError <= bandwidth) {
+    	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     }
-    else if (distance > (bandCenter + badwidth)) {
+    else if (distError > 0) {
     	WallFollowingLab.rightMotor.setSpeed(motorLow);
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     }
-    else {
+    else if (distError < 0) {
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
-    	WallFollowingLab.leftMotor.setSpeed(motorHigh);
+    	WallFollowingLab.leftMotor.setSpeed(motorLow);
     }
     // TODO: process a movement based on the us distance passed in (BANG-BANG style)
   }
