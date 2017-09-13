@@ -27,7 +27,8 @@ public class BangBangController implements UltrasonicController {
   public void processUSData(int distance) {
     this.distance = distance;
     this.distError = bandCenter - distance;
-    if (distError <= bandwidth) {
+    
+    if ( distError <= bandwidth && distError>= (0-bandwidth) ){
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     }
