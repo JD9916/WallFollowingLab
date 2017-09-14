@@ -7,7 +7,7 @@ public class PController implements UltrasonicController {
   /* Constants */
   private static final int MOTOR_SPEED = 200;
   private static final int FILTER_OUT = 20;
-  private static final int PROPCONST = 5;
+  private static final int PROPCONST = 3;
   private static final int MAXCORRECTION = 100;
 
   private final int bandCenter;
@@ -22,7 +22,7 @@ public class PController implements UltrasonicController {
     this.bandWidth = bandwidth;
     this.filterControl = 0;
 
-    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED); // Initalize motor rolling forward
+    WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED); // Initialize motor rolling forward
     WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
     WallFollowingLab.leftMotor.forward();
     WallFollowingLab.rightMotor.forward();
@@ -44,30 +44,47 @@ public class PController implements UltrasonicController {
     } else if (distance >= 255) {
       // We have repeated large values, so there must actually be nothing
       // there: leave the distance alone
-      this.distance = distance;
+    	this.distance = (int) (distance/(Math.sqrt(2.0)));
     } else {
       // distance went below 255: reset filter and leave
       // distance alone.
       filterControl = 0;
-      this.distance = distance;
+      this.distance = (int) (distance/(Math.sqrt(2.0)));
     }
     
     
-    if(Math.abs(distError) < bandWidth){
+    if(Math.abs(distError) <= bandWidth){
     	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED);
     	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED);
+    	WallFollowingLab.leftMotor.forward();
+    	WallFollowingLab.rightMotor.forward();
     	
     }
     else if(distError>0){
     	difference = calcProp(distError);
     	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - difference);
     	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + difference);
-    	
+    	if(distError > 27) {
+    		WallFollowingLab.leftMotor.forward();
+    		WallFollowingLab.rightMotor.backward();
+    	}
+    	else {
+    		WallFollowingLab.leftMotor.forward();
+    		WallFollowingLab.rightMotor.forward();
+    	}
     }
     else if(distError<0){
     	difference = calcProp(distError);
     	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + difference);
     	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED - difference);
+    	//if(distError < (-20)) {
+    		//WallFollowingLab.leftMotor.backward();
+    		//WallFollowingLab.rightMotor.forward();
+    	//}
+    	//else {
+    		WallFollowingLab.leftMotor.forward();
+    		WallFollowingLab.rightMotor.forward();
+    	//}   
     }
     
     
@@ -78,9 +95,9 @@ public class PController implements UltrasonicController {
   
   int calcProp(int difference){
 	  int correction;
-	  distError = Math.abs(distError);
+	  difference = Math.abs(difference);
 	  
-	  correction = (int)(PROPCONST * (double)distError);
+	  correction = (int)(PROPCONST * (double)difference);
 	  
 	  if(correction >= MOTOR_SPEED){
 		  correction = MAXCORRECTION;
