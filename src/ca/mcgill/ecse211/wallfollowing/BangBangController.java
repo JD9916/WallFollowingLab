@@ -47,14 +47,20 @@ public class BangBangController implements UltrasonicController {
     if ( (distError <= bandwidth) && (distError >= (0-bandwidth)) ){
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
+        WallFollowingLab.leftMotor.forward();
+        WallFollowingLab.rightMotor.forward();
     }
     else if (distError > 0) {
-    	WallFollowingLab.rightMotor.setSpeed(motorLow);
+    	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
+        WallFollowingLab.leftMotor.forward();
+        WallFollowingLab.rightMotor.backward();
     }
     else if (distError < 0) {
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     	WallFollowingLab.leftMotor.setSpeed(motorLow);
+        WallFollowingLab.leftMotor.forward();
+        WallFollowingLab.rightMotor.forward();
     }
     // TODO: process a movement based on the us distance passed in (BANG-BANG style)
   }
