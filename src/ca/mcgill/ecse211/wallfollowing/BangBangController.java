@@ -9,13 +9,13 @@ public class BangBangController implements UltrasonicController {
   private final int motorLow;
   private final int motorHigh;
   private int distance;
-  private int distError;
-  private int filterControl;
-  public static final int FILTER_OUT = 20;
+  private int distError;                      // Difference between the band center and the actual distance
+  private int filterControl;                  // Applying the filter control mechanism to the Bang Bang controller
+  public static final int FILTER_OUT = 20;    // Number of US samples at high distance before the distance is registered 
   
   public BangBangController(int bandCenter, int bandwidth, int motorLow, int motorHigh) {
     // Default Constructor
-	this.filterControl = 0;
+	this.filterControl = 0;                   // initializing the filter control variable
     this.bandCenter = bandCenter;
     this.bandwidth = bandwidth;
     this.motorLow = motorLow;
@@ -44,7 +44,7 @@ public class BangBangController implements UltrasonicController {
     //this.distance = (int)(distance/(Math.sqrt(2.0)));
     this.distError = bandCenter - distance;
     
-    if ( (distError <= bandwidth) && (distError >= (0-bandwidth)) ){
+    if ( (distError <= bandwidth) && (distError >= (0-bandwidth)) ){   // When the deviation from the band center is with in the bandwidth
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
         WallFollowingLab.leftMotor.forward();

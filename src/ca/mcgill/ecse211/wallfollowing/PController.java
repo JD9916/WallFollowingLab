@@ -5,11 +5,10 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 public class PController implements UltrasonicController {
 
   /* Constants */
-  private static final int MOTOR_SPEED = 200;
+  private static final int MOTOR_SPEED = 250;
   private static final int FILTER_OUT = 20;
-  private static final int PROPCONST = 6;
+  private static final int PROPCONST = 7;
   private static final int MAXCORRECTION = 100;
-  private static final int ANTICRASH = 30;
 
   private final int bandCenter;
   private final int bandWidth;
@@ -65,7 +64,7 @@ public class PController implements UltrasonicController {
     	difference = calcProp(distError);
     	WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED - difference);
     	WallFollowingLab.leftMotor.setSpeed(MOTOR_SPEED + difference);
-    	if(distance < ANTICRASH) {
+    	if(difference >= MAXCORRECTION) {
     		WallFollowingLab.rightMotor.setSpeed(MOTOR_SPEED + difference);
     		WallFollowingLab.leftMotor.forward();
     		WallFollowingLab.rightMotor.backward();
