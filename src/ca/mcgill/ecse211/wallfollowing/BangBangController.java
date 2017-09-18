@@ -44,19 +44,19 @@ public class BangBangController implements UltrasonicController {
     //this.distance = (int)(distance/(Math.sqrt(2.0)));
     this.distError = bandCenter - distance;
     
-    if ( (distError <= bandwidth) && (distError >= (0-bandwidth)) ){   // When the deviation from the band center is with in the bandwidth
+    if ( (distError <= bandwidth) && (distError >= (0-bandwidth)) ){   // When the deviation from the band center is within the bandwidth, keep the robot moving forward
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
         WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.forward();
     }
-    else if (distError > 0) {
+    else if (distError > 0) {      // When the deviation from the band center is outside the bandwidth and is positive, rotate the robot clockwise in its current position to avoid collision
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     	WallFollowingLab.leftMotor.setSpeed(motorHigh);
         WallFollowingLab.leftMotor.forward();
         WallFollowingLab.rightMotor.backward();
     }
-    else if (distError < 0) {
+    else if (distError < 0) {      // When the deviation from the band center is outside the bandwidth and is negative, turn the robot left (no rotation in this case)                                        
     	WallFollowingLab.rightMotor.setSpeed(motorHigh);
     	WallFollowingLab.leftMotor.setSpeed(motorLow);
         WallFollowingLab.leftMotor.forward();
